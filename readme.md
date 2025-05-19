@@ -26,7 +26,6 @@ Il sistema consente agli utenti di prenotare posti su voli aerei selezionando tr
 erDiagram
     UTENTE ||--o{ PRENOTAZIONE : effettua
     VOLO ||--o{ POSTO : contiene
-    VOLO ||--o{ PRENOTAZIONE : è_relativa_a
     POSTO ||--o{ PRENOTAZIONE : assegna
 
     UTENTE {
@@ -52,7 +51,6 @@ erDiagram
     PRENOTAZIONE {
         string codice PK
         string username FK
-        string codice_volo FK
         string codice_posto FK
         datetime data_prenotazione
     }
@@ -63,23 +61,20 @@ erDiagram
 ## **Casi d’Uso (Diagramma UML semplificato)**
 
 ```mermaid
-%% Casi d'Uso per Prenotazione Posto Aereo
-%% Gli attori sono Utente e Manager
+graph LR
+    U[Utente]
+    M[Manager]
 
-usecaseDiagram
-    actor Utente
-    actor Manager
+    U --> U1[Visualizza lista voli]
+    U --> U2[Visualizza dettagli volo e posti]
+    U --> U3[Prenota posti]
+    U --> U4[Cancella prenotazione]
+    U --> U5[Visualizza prenotazione]
+    U --> U6[Visualizza elenco prenotazioni]
 
-    Utente --> (Visualizza lista voli)
-    Utente --> (Visualizza dettagli volo e posti)
-    Utente --> (Prenota posti)
-    Utente --> (Cancella prenotazione)
-    Utente --> (Visualizza prenotazione)
-    Utente --> (Visualizza elenco prenotazioni)
-
-    Manager --> (Visualizza lista voli)
-    Manager --> (Visualizza dettagli volo e posti)
-    Manager --> (Crea volo)
-    Manager --> (Cancella volo)
-    Manager --> (Visualizza lista utenti)
+    M --> M1[Visualizza lista voli]
+    M --> M2[Visualizza dettagli volo e posti]
+    M --> M3[Crea volo]
+    M --> M4[Cancella volo]
+    M --> M5[Visualizza lista utenti]
 ```
