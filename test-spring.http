@@ -24,7 +24,7 @@ X-User: ggalazzo
 
 {
   "flightCode": "F001",
-  "seatCodes": ["A1"]
+  "seatCodes": ["A1", "A2"]
 }
 
 
