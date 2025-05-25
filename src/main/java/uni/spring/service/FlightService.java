@@ -4,10 +4,12 @@ import org.springframework.stereotype.Service;
 import uni.spring.model.Flight;
 import uni.spring.model.FlightRepository;
 import uni.spring.web.dto.FlightListItemView;
+import uni.spring.web.dto.FlightSeatView;
 import uni.spring.web.dto.FlightView;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FlightService {
@@ -18,32 +20,29 @@ public class FlightService {
         this.repository = repository;
     }
 
-    public FlightView create(String code, String username){
+    public FlightView create(String code, String username) {
         var f = new Flight();
         f.setCode(code);
         f.setCreatedBy(username);
         f.setCreatedAt(ZonedDateTime.now());
         f = repository.save(f);
-        return new FlightView(
-                f.getCode(),
-                f.getCreatedBy(),
-                f.getCreatedAt());
+        return f.toView();
     }
 
-    public List<FlightListItemView> findAll(){
+    public List<FlightListItemView> findAll() {
         return repository.findAll()
                 .stream()
-                .map(e -> new FlightListItemView(e.getCode()))
+                .map(Flight::toListItemView)
                 .toList();
     }
 
-    public FlightView findByCode(String code){
+    public FlightView findByCode(String code) {
         return repository.findById(code)
-                .map(f -> new FlightView(f.getCode(), f.getCreatedBy(), f.getCreatedAt()))
+                .map(Flight::toView)
                 .orElseThrow();
     }
 
-    public void delete(String code){
+    public void delete(String code) {
         repository.deleteById(code);
     }
 }
