@@ -29,7 +29,7 @@ public class Flight {
 
     private String createdBy;
     private ZonedDateTime createdAt;
-    @OneToMany(mappedBy = "flight")
+    @OneToMany(mappedBy = "flight", cascade = jakarta.persistence.CascadeType.ALL)
     private List<Seat> seats;
 
     public FlightView toView() {
@@ -40,5 +40,17 @@ public class Flight {
 
     public FlightListItemView toListItemView() {
         return new FlightListItemView(code);
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "code='" + code + '\'' +
+                ", departureTime=" + departureTime +
+                ", arrivalTime=" + arrivalTime +
+                ", createdBy='" + createdBy + '\'' +
+                ", createdAt=" + createdAt +
+                ", seats=" + seats +
+                '}';
     }
 }

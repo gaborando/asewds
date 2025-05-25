@@ -32,4 +32,14 @@ public class Seat {
     public ReservationSeatView toReservationSeatView() {
         return new ReservationSeatView(identifier, flight.getCode(), code);
     }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "identifier='" + identifier + '\'' +
+                ", code='" + code + '\'' +
+                ", flight=" + flight.getCode() +
+                ", reserved=" + (reservation != null) +
+                '}';
+    }
 }

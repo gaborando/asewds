@@ -7,7 +7,8 @@ Content-Type: application/json
 X-User: ggalazzo
 
 {
- "code":"F001"
+ "code":"F001",
+  "seats": ["A1","A2","B1", "B2"]
 }
 
 ### GET request to example server
@@ -15,3 +16,18 @@ GET http://localhost:8080/api/flight/F001
 
 ### GET request to example server
 DELETE http://localhost:8080/api/flight/F001
+
+###
+POST http://localhost:8080/api/reservation/
+Content-Type: application/json
+X-User: ggalazzo
+
+{
+  "flightCode": "F001",
+  "seatCodes": ["A1"]
+}
+
+
+###
+GET http://localhost:8080/api/reservation/
+X-User: ggalazzo

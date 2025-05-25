@@ -35,7 +35,7 @@ public class FlightController {
     @PostMapping("/")
     public FlightView create(@RequestBody FlightCreateRequest flight,
                          @RequestHeader("X-User") String username){
-        return service.create(flight.getCode(), username);
+        return service.create(flight.getCode(), username, flight.getSeats());
     }
 
     // Come manager, voglio cancellare voli esistenti, per gestire l’operatività della compagnia.

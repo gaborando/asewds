@@ -31,4 +31,13 @@ public class Reservation {
         return new ReservationView(identifier, seats.stream().map(Seat::toReservationSeatView)
                 .collect(Collectors.toSet()));
     }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "identifier='" + identifier + '\'' +
+                ", owner='" + owner + '\'' +
+                ", seats=" + seats.stream().map(Seat::getCode).collect(Collectors.toSet()) +
+                '}';
+    }
 }
