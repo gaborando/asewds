@@ -9,6 +9,7 @@ import uni.spring.web.dto.FlightView;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:8100")
 @RestController
 @RequestMapping("/api/flight")
 public class FlightController {
@@ -33,9 +34,9 @@ public class FlightController {
 
     // Come manager, voglio creare nuovi voli, per offrire nuove rotte agli utenti.
     @PostMapping("/")
-    public FlightView create(@RequestBody FlightCreateRequest flight,
+    public void create(@RequestBody FlightCreateRequest flight,
                          @RequestHeader("X-User") String username){
-        return service.create(flight.getCode(), username, flight.getSeats());
+        service.create(flight.getCode(), username, flight.getSeats());
     }
 
     // Come manager, voglio cancellare voli esistenti, per gestire l’operatività della compagnia.

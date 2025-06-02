@@ -1,13 +1,18 @@
 package uni.spring.service;
 
+import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import uni.spring.model.FlightRepository;
 import uni.spring.model.Reservation;
 import uni.spring.model.ReservationRepository;
 import uni.spring.model.Seat;
+import uni.spring.model.event.ReservationCreatedEvent;
+import uni.spring.utils.FlightFullRepository;
+import uni.spring.utils.LockManager;
 import uni.spring.web.dto.ReservationView;
 import uni.spring.web.dto.ReservationSeatView;
 
@@ -25,38 +30,52 @@ public class ReservationService {
     private final FlightRepository flightRepository;
     private final ReservationRepository reservationRepository;
 
-    public ReservationService(FlightRepository flightRepository, ReservationRepository reservationRepository) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    private final LockManager lockManager;
+
+    public ReservationService(FlightRepository flightRepository, ReservationRepository reservationRepository, FlightFullRepository flightFullRepository,
+                              ApplicationEventPublisher eventPublisher, LockManager lockManager) {
         this.flightRepository = flightRepository;
         this.reservationRepository = reservationRepository;
+        this.eventPublisher = eventPublisher;
+        this.lockManager = lockManager;
     }
 
+    @SneakyThrows
     public ReservationView createReservation(String username, String flight, Set<String> seats) {
-        var f = flightRepository.findById(flight).orElseThrow();
 
-        LOGGER.info("Flight: {}", f);
+        lockManager.acquire(flight);
+        try{
+            var f = flightRepository.findById(flight).orElseThrow();
 
-        var reservation = reservationRepository.save(new Reservation(
-                UUID.randomUUID().toString(),
-                username,
-                new ArrayList<>()
-        ));
+            LOGGER.info("Flight: {}", f);
+            var reservation = reservationRepository.save(new Reservation(
+                    UUID.randomUUID().toString(),
+                    username,
+                    new ArrayList<>()
+            ));
+            LOGGER.info("Reservation: {}", reservation);
+            for (String seat : seats) {
+                var s = f.getSeats().stream().filter(e -> e.getCode().equals(seat)).findFirst().orElseThrow();
+                Assert.isTrue(s.getReservation() == null, "Seat is already reserved");
 
-        LOGGER.info("Reservation: {}", reservation);
+                s.setReservation(reservation);
+                reservation.getSeats().add(s);
+                LOGGER.info("Seat: {}", s);
 
-        for (String seat : seats) {
-            var s = f.getSeats().stream().filter(e -> e.getCode().equals(seat)).findFirst().orElseThrow();
-            Assert.isTrue(s.getReservation() == null, "Seat is already reserved");
-
-            s.setReservation(reservation);
-            reservation.getSeats().add(s);
-            LOGGER.info("Seat: {}", s);
-
+            }
+            LOGGER.info("Reservation Seats: {}", reservation.getSeats());
+            reservationRepository.save(reservation);
+            eventPublisher.publishEvent(new ReservationCreatedEvent(
+                    reservation
+            ));
+            return reservation.toView();
+        }finally {
+            lockManager.release(flight);
         }
 
-        LOGGER.info("Reservation Seats: {}", reservation.getSeats());
-        reservationRepository.save(reservation);
 
-        return reservation.toView();
 
     }
 

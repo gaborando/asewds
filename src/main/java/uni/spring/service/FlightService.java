@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import uni.spring.model.Flight;
 import uni.spring.model.FlightRepository;
 import uni.spring.model.Seat;
+import uni.spring.utils.FlightFullRepository;
 import uni.spring.web.dto.FlightListItemView;
 import uni.spring.web.dto.FlightSeatView;
 import uni.spring.web.dto.FlightView;

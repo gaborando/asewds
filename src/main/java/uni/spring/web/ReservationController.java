@@ -21,11 +21,11 @@ public class ReservationController {
 
     // Come cliente, voglio prenotare uno o più posti su un volo disponibile, per viaggiare nella data desiderata.
     @PostMapping("/")
-    public ReservationView create(@RequestBody ReservationCreateRequest reservation,
+    public String create(@RequestBody ReservationCreateRequest reservation,
                                   @RequestHeader("X-User") String username){
         return service.createReservation(
                 username, reservation.getFlightCode(), reservation.getSeatCodes()
-        );
+        ).getIdentifier();
     }
 
 

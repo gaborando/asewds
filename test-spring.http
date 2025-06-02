@@ -11,6 +11,16 @@ X-User: ggalazzo
   "seats": ["A1","A2","B1", "B2"]
 }
 
+###
+POST http://localhost:8080/api/flight/
+Content-Type: application/json
+X-User: ggalazzo
+
+{
+  "code":"F002",
+  "seats": ["A1","A2","B1", "B2"]
+}
+
 ### GET request to example server
 GET http://localhost:8080/api/flight/F001
 
@@ -24,6 +34,16 @@ X-User: ggalazzo
 
 {
   "flightCode": "F001",
+  "seatCodes": ["A1", "A2"]
+}
+
+###
+POST http://localhost:8080/api/reservation/
+Content-Type: application/json
+X-User: ggalazzo
+
+{
+  "flightCode": "F002",
   "seatCodes": ["A1", "A2"]
 }
 
